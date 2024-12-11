@@ -1,0 +1,69 @@
+***************************************************************** 4)crud **************************************************************
+
+
+the below query is used in new procedure in Stored Procedures
+
+CREATE PROCEDURE `employee_db`.`usp_employee_add_or_edit` (
+IN _id INT,
+IN _name VARCHAR(45),
+IN _employee_code VARCHAR(45),
+IN _salary INT
+
+)
+BEGIN
+IF _id = 0 THEN
+INSERT INTO employees(name,employee_code,salary)
+VALUES (_name,_employee_code,_salary);
+
+ELSE
+	UPDATE employees
+    SET name = _name,
+    employee_code = _employee_code,
+    salary = _salary
+    WHERE id = _id;
+    
+    END IF;
+    
+    SELECT ROW_COUNT() AS 'affectedRows';
+
+END
+
+
+*****************CHATGPT STORED PROCEDURE******************
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_employee_add_or_edit`(
+    IN _id INT,
+    IN _name VARCHAR(45),
+    IN _employee_code VARCHAR(45),
+    IN _salary INT
+)
+BEGIN
+    -- Validate input parameters
+    IF _name IS NULL OR _employee_code IS NULL OR _salary IS NULL THEN
+        SIGNAL SQLSTATE '45000' 
+            SET MESSAGE_TEXT = 'Invalid input: name, employee_code, and salary cannot be NULL';
+    END IF;
+
+    -- If _id is 0, perform an INSERT
+    IF _id = 0 THEN
+        INSERT INTO employees (name, employee_code, salary)
+        VALUES (_name, _employee_code, _salary);
+
+    -- Otherwise, perform an UPDATE
+    ELSE
+        UPDATE employees
+        SET name = _name,
+            employee_code = _employee_code,
+            salary = _salary
+        WHERE id = _id;
+
+        -- Check if the UPDATE actually affected rows
+        IF ROW_COUNT() = 0 THEN
+            SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Update failed: Employee with given ID does not exist';
+        END IF;
+    END IF;
+
+    -- Return the number of affected rows
+    SELECT ROW_COUNT() AS 'affectedRows';
+END
