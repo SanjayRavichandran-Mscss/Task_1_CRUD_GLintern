@@ -13,9 +13,6 @@ module.exports.getEmployeeById = async (id)=>{
 }
 
 module.exports.deleteEmployee = async (id)=>{
-    // const [record] = await db.query("DELETE FROM employees WHERE id = ?" , [id])
-    // .catch(err => console.log(err))
-    // return record.affectedRows;
     const [{ affectedRows }] = await db.query("DELETE FROM employees WHERE id = ?",[id])
     return affectedRows
 }
