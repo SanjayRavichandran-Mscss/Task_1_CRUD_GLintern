@@ -1,7 +1,7 @@
 const express = require('express');
 router = express.Router()
 const service = require('../services/employee.service');
-const e = require('express');
+const express = require('express');
 
 // use JSON format to handle the data for below CRUD operations in POSTMAN API
 
